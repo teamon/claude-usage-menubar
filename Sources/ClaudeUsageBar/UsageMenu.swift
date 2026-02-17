@@ -16,11 +16,8 @@ final class UsageMenu {
     var nsMenu: NSMenu { menu }
 
     func update(with usage: UsageData) {
-        let fiveHourPct = Int(usage.fiveHour.utilization.rounded())
-        let sevenDayPct = Int(usage.sevenDay.utilization.rounded())
-
-        fiveHourItem.title = "5h: \(fiveHourPct)%  (\(usage.fiveHour.timeRemainingFormatted) left)"
-        sevenDayItem.title = "7d: \(sevenDayPct)%  (\(usage.sevenDay.timeRemainingFormatted) left)"
+        fiveHourItem.title = formatWindowTitle("5h", usage.fiveHour)
+        sevenDayItem.title = formatWindowTitle("7d", usage.sevenDay)
 
         fiveHourItem.isHidden = false
         sevenDayItem.isHidden = false
@@ -91,6 +88,12 @@ final class UsageMenu {
             // Silently fail - the state check below will reflect actual state
         }
         launchAtLoginItem.state = isLaunchAtLoginEnabled ? .on : .off
+    }
+
+    private func formatWindowTitle(_ label: String, _ w: UsageData.Window) -> String {
+        let usage = Int(w.utilization.rounded())
+        let period = Int(w.timeElapsedPercent.rounded())
+        return "\(label): \(usage)% used, \(period)% elapsed  (\(w.timeRemainingFormatted) left)"
     }
 
     private var isLaunchAtLoginEnabled: Bool {
